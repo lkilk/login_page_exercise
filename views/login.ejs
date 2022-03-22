@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Login</title>
+</head>
+    <body>
+        <div class="container">
+    
+        <h1>Please Login</h1>
+            <form action="login" method="POST">
+                <div class="form-control">
+                    <input type="text" id="username" name="username" required>
+                    <label>Username</label>
+                </div>
+                <div class="form-control">
+                    <input type="password" id="password" name="password" required>
+                    <label>Password</label>
+                </div>
+
+                <button class="btn">Login</button>
+
+                <p class="text">Don't have an account? <a 
+                    href="register">Register</a></p>
+
+                <div class="message">
+                    <p><%=message%></p>
+                </div>
+            </form>
+        </div>
+        
+        <script src="script.js"></script>
+    </body>
+</html>
+
+<!-- on login page create a new message that says clickk here to register, takes them to registeraccount page, need app .get, need an app. ppost, if they doent already exist need to add them to the tabel, redirectto login page with a messgae saying created succesfully -->

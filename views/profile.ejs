@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Edit Profile</title>
+</head>
+    <body>
+        <div class="container">
+    
+        <h1>Edit Profile</h1>
+            <form action="profile" method="POST">
+                <div class="form-control">
+                    <input type="text" id="fname" name="fname" required>
+                    <label>First Name: <%=first_name%></label>
+                </div>
+                <div class="form-control">
+                    <input type="text" id="sname" name="sname" required>
+                    <label>Surname: <%=surname%></label>
+                </div>
+                <div class="form-control">
+                    <input type="text" id="username" name="username" required>
+                    <label>Username: <%=username%></label>
+                </div>
+                <div class="form-control">
+                    <input type="password" id="password" name="password"  value="<%=password%>"required>
+                    <label>Password</label>
+                </div>
+
+                <button class="btn">Submit</button>
+
+                <p class="text">Back to Home? <a 
+                    href="welcome">Click Here</a></p>
+
+                <div class="message">
+                    <p><%=message%></p>
+                </div>
+            </form>
+        </div>
+        
+        <script src="script.js"></script>
+    </body>
+</html>
+
+<!-- app.post call to a function - update edit profile, check password, if it doesnt match current password , update password on database, hide the editprofile page, for logout, set stuf to blank strings and redirect to login page --> 

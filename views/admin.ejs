@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Admin</title>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" />
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var table = $('#example').DataTable();
+            $('#example tbody').on('click', 'tr', function () {
+                if ($(this).hasClass('selected')) {
+                    $(this).removeClass('selected');
+                }
+                else {
+                    table.$('tr.selected').removeClass('selected');
+                    $(this).addClass('selected');
+                    let currentRow=$(this).closest("tr");
+                    let isAdmin=currentRow.find("td:eq(5)").html();
+                    let id = currentRow.find("td:eq(0)").html();
+                    let uname = currentRow.find("td:eq(3)").html();
+                    document.getElementById('LblUsername').innerHTML = uname;
+                    hiddenId.setAttribute('value' , id);
+                    hiddenAdminId.setAttribute('value', id);
+                    hiddenRemoveAdminId.setAttribute('value', id);
+                    if(isAdmin === 'Y') {
+                        $('#makeAdminBtn').prop('disabled', true);
+                        $('#removeAdminBtn').prop('disabled', false);
+                        $("#makeAdmin"). css("display", "none");
+                        $("#removeAdmin"). css("display", "block");
+                    } else {
+                        $('#makeAdminBtn').prop('disabled', false);
+                        $('#removeAdminBtn').prop('disabled', true);
+                        $("#makeAdmin"). css("display", "block");
+                        $("#removeAdmin"). css("display", "none");
+                    }
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <table id="example" class="display" style="width:80%">
+            <thead>
+            <tr>
+            <th>id</th>
+            <th>First Name</th>
+            <th>Surname</th>
+            <th>Username</th>
+            <th>Password</th>
+            <th>Is Admin?</th>
+            </tr>
+        </thead>
+            <% for (var i = 0; i < data.length; i++) { %>
+            <tr>
+            <td><%= data[i].id %></td>
+            <td><%= data[i].first_name %></td>
+            <td><%= data[i].surname %></td>
+            <td><%= data[i].username %></td>
+            <td><%= data[i].password %></td>
+            <td><%= data[i].isadmin %></td>
+            </tr>
+            <% } %>
+        </table>
+        <p>The selected user is currently: <label id="LblUsername" ></label></p>
+        <p>The options available to you are:</p>
+        <form action="deleteUser" method="POST" id="deleteUser">
+                <input type="hidden" name="hiddenId" id="hiddenId"/>
+                <button class="option" type="submit" id="deleteUserBtn">Delete User</button>
+        </form>
+        <form action="makeAdmin" method="POST" id="makeAdmin">
+                <input type="hidden" name="hiddenAdminId" id="hiddenAdminId"/>
+                <button class="option" type="submit" id="makeAdminBtn" >Make Admin</button>
+        </form>
+        <form action="removeAdmin" method="POST" id="removeAdmin">
+                <input type="hidden" name="hiddenRemoveAdminId" id="hiddenRemoveAdminId"/>
+                <button class="option" type="submit" id="removeAdminBtn">Remove Admin</button>
+        </form>
+        <p class="text">Back to Homepage? <a 
+            href="welcome">Click Here</a></p>
+    </div>
+</body>
+</html>

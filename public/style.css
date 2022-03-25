@@ -26,6 +26,9 @@ body {
   margin: 0;
 }
 
+.display {
+  color: beige;
+}
 .container {
   background-color: rgba(0, 0, 0, 0.6);
   padding: 20px 40px;
@@ -44,6 +47,16 @@ body {
 .container a {
   text-decoration: none;
   color: lightblue;
+}
+
+.container td {
+  color: black;
+}
+
+.menu {
+  text-align: center;
+  margin-bottom: 50px;
+  font-size: 18px;
 }
 
 .btn {
@@ -68,11 +81,26 @@ body {
 
 .text {
   margin-top: 30px;
+  text-align: center;
+}
+
+.option {
+  cursor: pointer;
+  display: inline-block;
+  width: 100%;
+  background: lightblue;
+  padding: 10px;
+  font-family: inherit;
+  font-size: 14px;
+  border: 0;
+  border-radius: 5px;
+  margin: 20px 0 5px;
 }
 
 .message {
   color: lightgoldenrodyellow;
   font-size: 18px;
+  text-align: center;
 }
 
 .form-control {

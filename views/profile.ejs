@@ -13,25 +13,33 @@
         <h1>Edit Profile</h1>
             <form action="profile" method="POST">
                 <div class="form-control">
-                    <input type="text" id="fname" name="fname" required>
-                    <label>First Name: <%=first_name%></label>
+                    <!-- <input type="text" id="fname" name="fname" required> -->
+                    <br>
+                    <label>First Name: <span><%=first_name%></span></label>
                 </div>
                 <div class="form-control">
-                    <input type="text" id="sname" name="sname" required>
-                    <label>Surname: <%=surname%></label>
+                    <!-- <input type="text" id="sname" name="sname" required> -->
+                    <br>
+                    <label>Surname: <span><%=surname%></span></label>
                 </div>
                 <div class="form-control">
-                    <input type="text" id="username" name="username" required>
-                    <label>Username: <%=username%></label>
+                    <!-- <input type="text" id="username" name="username" required> -->
+                    <br>
+                    <label>Username: <span><%=username%></span></label>
+                    <br>
+                </div>
+                <div class="update-password">
+                    <h5>Regularly updating your password imporves account security.</h5>
                 </div>
                 <div class="form-control">
-                    <input type="password" id="password" name="password"  value="<%=password%>"required>
-                    <label>Password</label>
+                    <input type="password" id="password" name="password" required>
+                    <!-- <input type="password" id="password" name="password"  value="<%=password%>"required> -->
+                    <label>Enter New Password</label>
                 </div>
 
                 <button class="btn">Submit</button>
 
-                <p class="text">Back to Home? <a 
+                <p class="text">Back to Homepage? <a 
                     href="welcome">Click Here</a></p>
 
                 <div class="message">

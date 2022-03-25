@@ -7,7 +7,7 @@ const bodyParser = require('body-parser'); //npm install body-parser
 const path = require('path');
 const user = require("./user.js");
 let myUser = new user;
-
+const registration = require('./registration.js');
 
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
@@ -35,16 +35,35 @@ app.post('/register', (req, res, next) => {
     checkInput(req.body, res);  
 })
 app.get('/welcome', (req, res) => {
-    res.render('welcome', {user: ''});
+    let isLoggedIn = checkLoggedIn();
+    console.log(isLoggedIn);
+    if (isLoggedIn != true){
+        res.render('login', {message: 'Please Login'});
+    }else{
+        res.render('welcome', { user: myUser.getFirstName + " " + myUser.getSurname });
+    }
 })
 app.get('/profile', (req, res) => {
     processEditProfile(req, res);
 })
+app.post('/profile', (req, res, next) => {
+    changePassword(req.body, res);
+})
 app.get('/logout', (req, res) => {
     processLogout(req, res);
 })
-
-
+app.get('/admin', (req, res) => {
+    processAdmin(req, res);
+})
+app.post('/makeAdmin', (req, res) =>{
+    processMakeAdmin(req.body, req, res);
+})
+app.post('/removeAdmin', (req, res) =>{
+    processRemoveAdmin(req.body, req, res);
+})
+app.post('/deleteUser', (req, res) =>{
+    processDeleteUser(req.body, req, res);
+})
 
 app.listen(3000, () => {
     console.log('Listenting on port 3000');
@@ -140,46 +159,158 @@ function checkInput(params, res){
                     }
                 }
             if(!foundUser){
-                registerUser(params, res);
+                registration.registerUser(params, res);
 
             }       
         }
     })   
 }
 
-function registerUser(params, res){
-    let firstName = params.fname;
-    let surname = params.sname;
-    let newUser = params.newuser;
-    let newPass = params.newpass;
-    let column1 = 'first_name'
-    let column2 = 'surname'
-    let column3 = 'username'
-    let column4 = 'password'
-    let tableName = 'my_first_table';
-    let myInsertQuery = `INSERT INTO public.${tableName} (${column1}, ${column2}, ${column3}, ${column4}) VALUES ('${firstName}', '${surname}', '${newUser}', '${newPass}');`;
-    client.query(myInsertQuery, (error, result) => {
-        if(error){
-            console.log(error);
-            res.status(500).send(error);
-        } else {
-            res.render('login');
-            res.render('login', { message: 'Account successfully created'});
-        }
-    })
-}    
-
 function processEditProfile(params, res){
-    res.render('profile', {first_name: myUser.getFirstName, surname: myUser.getSurname, username: myUser.getUsername, password: myUser.getPassword, message: ""})
-    
+    let isLoggedIn = checkLoggedIn();
+    console.log(isLoggedIn);
+    if (isLoggedIn != true){
+        res.render('login', {message: 'Please Login'});
+    }else{
+        res.render('profile', {first_name: myUser.getFirstName, surname: myUser.getSurname, username: myUser.getUsername, password: myUser.getPassword, message: ""})
+    }
+}
+
+function changePassword(params, res){
+    let isLoggedIn = checkLoggedIn();
+    console.log(isLoggedIn);
+    if (isLoggedIn != true){
+        res.render('login', {message: 'Please Login'});
+    }else{
+        let username = myUser.getUsername;
+        let password = myUser.getPassword;
+        let newPassword = params.password;
+        let columnName = 'username'
+        let myUpdateQuery = `UPDATE public.my_first_table SET password='${newPassword}' WHERE ${columnName} = '${username}';`;
+        if(newPassword === password) {
+            res.render('profile', {first_name: myUser.getFirstName, surname: myUser.getSurname, username: myUser.getUsername, password: myUser.getPassword, message: "Update Failed: Password used too recently"});
+        }else{
+            client.query(myUpdateQuery, 
+                (error, result) => {
+                    if(error){
+                        console.log(error);
+                        res.status(500).send(error);
+                    } else {
+                        res.render('profile', {first_name: myUser.getFirstName, surname: myUser.getSurname, username: myUser.getUsername, password: myUser.getPassword, message: "Password Succesfully Updated"});
+        
+                    }
+                })
+        }
+    }
 }
 
 function processLogout(params, res){
-    myUser.getFirstName = '';
-    myUser.getSurname = '';
-    myUser.getUsername = '';
-    myUser.getPassword = '';
-    myUser.getId = '';
-    myUser.getIsAdmin ='';
+    delete myUser;
+    myUser.setFirstName = '';
+    myUser.setSurname = '';
+    myUser.setUsername = '';
+    myUser.setPassword = '';
+    myUser.setId = '';
+    myUser.setIsAdmin ='';
+    console.log('logging user out');
+    console.log(myUser.getUsername)
     res.render('login', { message: ''})
+}
+
+function checkLoggedIn(){
+    console.log('checking logged in')
+    console.log(myUser.getUsername)
+    if (myUser.getUsername == ''){
+        return false
+    }else{
+        return true
+    }
+}
+
+function processAdmin(req, res){
+    let isLoggedIn = checkLoggedIn();
+    console.log(isLoggedIn);
+    if (isLoggedIn != true){
+        res.render('login', {message: 'Please Login'});
+    }else{
+        let tableName = 'my_first_table';
+        let myQuery = `SELECT * FROM ${tableName}`
+        client.query(myQuery, 
+            (error, result) => {
+                if(error){
+                    console.log(error);
+                    res.status(500).send(error);
+                } else {
+                    let data = result.rows;
+                    console.table(data);
+                    res.render('admin', {data});
+                }
+            })
+    }
+}
+
+function processMakeAdmin(params, req, res){
+    let isLoggedIn = checkLoggedIn();
+    console.log(isLoggedIn);
+    if (isLoggedIn != true){
+        res.render('login', {message: 'Please Login'});
+    }else{
+        let uid = params.hiddenAdminId;
+        let tableName = 'my_first_table';
+        let myQuery = `UPDATE ${tableName} SET isadmin = 'Y' WHERE id = ${uid}`;
+        client.query(myQuery, 
+            (error, result) => {
+                if(error){
+                    console.log(error);
+                    res.status(500).send(error);
+                } else {
+                
+                    processAdmin(req, res);
+                }
+            })
+    }
+}
+
+function processRemoveAdmin(params, req, res){
+    let isLoggedIn = checkLoggedIn();
+    console.log(isLoggedIn);
+    if (isLoggedIn != true){
+        res.render('login', {message: 'Please Login'});
+    }else{
+        let uid = params.hiddenRemoveAdminId;
+        let tableName = 'my_first_table';
+        let myQuery = `UPDATE ${tableName} SET isadmin = 'N' WHERE id = ${uid}`;
+        client.query(myQuery, 
+            (error, result) => {
+                if(error){
+                    console.log(error);
+                    res.status(500).send(error);
+                } else {
+                
+                    processAdmin(req, res);
+                }
+            })
+    }
+}
+
+function processDeleteUser(params, req, res){
+    let isLoggedIn = checkLoggedIn();
+    console.log(isLoggedIn);
+    if (isLoggedIn != true){
+        res.render('login', {message: 'Please Login'});
+    }else{
+        let uid = params.hiddenId;
+        let tableName = 'my_first_table';
+        let myQuery = `DELETE FROM ${tableName} WHERE id = ${uid}`;
+        client.query(myQuery, 
+            (error, result) => {
+                if(error){
+                    console.log(error);
+                    res.status(500).send(error);
+                } else {
+                
+                    processAdmin(req, res);
+                }
+            })
+    }
 }

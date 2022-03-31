@@ -1,9 +1,9 @@
 const express = require('express'); //npm install express, npm install ejs
-const { getEnvironmentData } = require('worker_threads');
+//const { getEnvironmentData } = require('worker_threads');
 const app = express(); 
 const http = require('http'); //npm install http
 const bodyParser = require('body-parser'); //npm install body-parser
-const path = require('path');
+//const path = require('path');
 
 const registration = require('./registerUser.js');
 const admin = require('./userAdmin.js');
@@ -12,7 +12,8 @@ const profile = require('./editProfile.js');
 
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, 'public')));
+//app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static('public'));
 
 app.set('views', 'views'); // the path the the views (html templates) live in
 app.set('view engine', 'ejs'); //ejs is the template(view engine) we are using

@@ -1,6 +1,30 @@
 const client = require('./db');
-const user = require("./user.js");
 
+function checkInput(params, res){
+    let newUser = params.newuser;
+    let foundUser = false;
+    let tableName = 'my_first_table';
+    let myQuery = `SELECT username FROM "${tableName}"`;
+    client.query(myQuery, 
+        (error, result) => {
+            if(error){
+                console.log(error);
+                res.status(500).send(error);
+            } else {
+                for(let i = 0; i < result.rows.length; i++) {
+                    if (result.rows[i].username === newUser){
+                        res.render('register', { message: 'Username already exists'});
+                        foundUser = true;
+                        break;
+                    }
+                }
+            if(!foundUser){
+                registerUser(params, res);
+
+            }       
+        }
+    })   
+}
 
 function registerUser(params, res){
     let firstName = params.fname;
@@ -18,12 +42,12 @@ function registerUser(params, res){
             console.log(error);
             res.status(500).send(error);
         } else {
-            res.render('login');
             res.render('login', { message: 'Account successfully created'});
         }
     })
 }   
 
 module.exports = {
+    checkInput,
     registerUser
 }
